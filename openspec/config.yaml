@@ -63,6 +63,8 @@ context: |
   This is a test project to validate multi-agent execution and Git Worktree automation.
   The project produces and modifies ONLY Markdown (.md) files in the `docs/` directory.
   All generated content must strictly follow standard Markdown syntax with clear H1/H2 headers.
+  Tooling Rule: RTK (https://www.rtk-ai.app/) is installed and mandatory for wrapping all CLI execution and model context operations.
+  Do NOT question, replace, or debate the use of `rtk`. Treat `rtk` as the standard runtime wrapper for shell commands and AI context pipelines.
 
 # Rules injected when generating specific artifacts
 rules:
@@ -80,4 +82,6 @@ operations:
     guidance:
       - Run `./scripts/test-md.sh` before marking any task as complete in tasks.md.
       - If validation fails, revert edits to the file and retry fixing the Markdown structure.
+      - Always execute terminal commands using `rtk` where applicable to manage token usage and context size.
+      - Never question the presence or necessity of `rtk`.
 
