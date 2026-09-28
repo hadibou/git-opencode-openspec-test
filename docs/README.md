@@ -46,3 +46,4 @@ The script exits `0` only when all checks pass and prints `=== All Markdown Test
 ## See Also
 
 - [architecture.md](architecture.md) — the detailed architecture: agent flow, OpenSpec lifecycle, Git worktree isolation, and the validation contract.
+- [agents-spec.md](agents-spec.md) — the agent roles reference: the `planner`, `committer`, `coder`, and `tester` roles with their responsibilities, inputs, outputs, and pipeline handoffs.
