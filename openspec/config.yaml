@@ -65,12 +65,28 @@ context: |
   All generated content must strictly follow standard Markdown syntax with clear H1/H2 headers.
   Tooling Rule: RTK (https://www.rtk-ai.app/) is installed and mandatory for wrapping all CLI execution and model context operations.
   Do NOT question, replace, or debate the use of `rtk`. Treat `rtk` as the standard runtime wrapper for shell commands and AI context pipelines.
+  
+  Feature State Machine Specification:
+  Features in `docs/features.md` must adhere to the following strict state lifecycle:
+  
+  1. [BACKLOG]: Queued for implementation.
+  2. [IN_PROGRESS]: Active worktree open (`../worktrees/feature-<id>`); @planner/@coder/@tester working.
+  3. [IN_REVIEW]: PR opened by @committer via `rtk gh pr create`; pending automated review.
+  4. [NEEDS_REVISION]: PR requested changes by @reviewer; @coder addressing feedback in worktree.
+  5. [APPROVED]: PR approved and merged into `master` by @reviewer (`rtk gh pr merge`).
+  6. [ARCHIVED]: Post-merge `/openspec-archive` completed on `master`; worktree deleted by @committer.
+  
+  State Machine Rules:
+  - State Transitions: [BACKLOG] -> [IN_PROGRESS] -> [IN_REVIEW] -> [APPROVED] -> [ARCHIVED]
+    (If PR needs fixes: [IN_REVIEW] -> [NEEDS_REVISION] -> [IN_REVIEW]).
+  - Self-Merges Forbidden: Only @reviewer is permitted to approve or execute `rtk gh pr merge`.
 
 # Rules injected when generating specific artifacts
 rules:
   proposal:
     - Keep proposals concise and explicitly list the target `.md` files to be created or modified.
   specs:
+  - State updates to `docs/features.md` must strictly follow the defined state machine tags.
     - Include clear acceptance criteria for Markdown header hierarchy and file cross-references.
   tasks:
     - Ensure every task maps directly to creating or editing a specific `.md` file.

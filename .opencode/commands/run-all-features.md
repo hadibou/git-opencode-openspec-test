@@ -1,35 +1,20 @@
 ---
-description: Iterates through docs/features.md and runs the pipeline for each feature sequentially.a
+description: Processes features sequentially using state tracking in docs/features.md.
 ---
 
-# Feature Loop Execution
+# Roadmap Loop Protocol
 
-1. **Read Roadmap:**
-   
-   - Inspect `docs/features.md` to find the first uncompleted checkbox (`- [ ]`).
-   - Extract the feature ID (e.g., `feature-01`) and the task description.
-   - If no uncompleted features remain, log "All features implemented and merged!" and exit.
+1. **Find Next Actionable Feature:**
+   - Scan `docs/features.md`:
+     - If a feature is `[NEEDS_REVISION]`: Resume `@coder` in `../worktrees/<feature-id>`.
+     - If a feature is `[BACKLOG]`: Mark as `[IN_PROGRESS]` and start new pipeline.
 
-2. **Execute Pipeline for Current Feature:**
-   
-   - Invoke `/pipeline` passing the extracted feature ID and description:
-     `/pipeline "Implement <feature-id>: <description>"`
+2. **Run Pipeline Stages:**
+   - **Phase 1 (Plan/Code/Test):** `@planner` $\rightarrow$ `@coder` $\rightarrow$ `@tester`.
+   - **Phase 2 (PR Creation):** `@committer` pushes branch, creates PR, sets state to `[IN_REVIEW]`.
+   - **Phase 3 (Automated Review):** `@reviewer` audits PR diffs via `rtk gh pr`:
+     - If `CHANGES_REQUESTED`: Set state to `[NEEDS_REVISION]`, route comments to `@coder`.
+     - If `APPROVED`: `@reviewer` merges PR, set state to `[APPROVED]`.
+   - **Phase 4 (Archiving):** `@committer` pulls `master`, runs `/openspec-archive`, cleans up worktree, and updates state in `docs/features.md` to `[ARCHIVED]`.
 
-3. **Wait for Full Validation & Merge:**
-   
-   - Ensure the `/pipeline` completes the entire lifecycle:
-     - Worktree creation & branch push
-     - `@planner` spec proposal
-     - `@coder` implementation & `@tester` passing
-     - PR creation, watching, approval, and merge to `master`
-     - `/openspec-archive` on `master` and worktree cleanup
-
-4. **Mark Feature as Completed:**
-   
-   - On `master`, update `docs/features.md` to change `- [ ] **<feature-id>**` to `- [x] **<feature-id>**`.
-   - Commit and push the roadmap update directly on `master`:
-     `git add docs/features.md && git commit -m "docs: mark <feature-id> as completed" && git push`
-
-5. **Loop Next Feature:**
-   
-   - Repeat from Step 1 until all items in `docs/features.md` are marked as completed `[x]`.
+3. **Loop:** Repeat until all roadmap items reach `[ARCHIVED]`.
